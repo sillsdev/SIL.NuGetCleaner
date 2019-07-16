@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>SIL.NuGetCleaner</RootNamespace>
+    <Description>NuGetCleaner allows to unlist pre-release packages after the release of a new version.</Description>
+    <AssemblyTitle>NuGetCleaner</AssemblyTitle>
+    <Company>SIL</Company>
+    <Product>Palaso Library</Product>
+    <Copyright>Copyright © 2019 SIL International</Copyright>
+    <Authors>SIL International</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/sillsdev/SIL.NuGetCleaner</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>nugetclean</ToolCommandName>
+    <PackageOutputPath>../output/$(Configuration)</PackageOutputPath>
+    <AppendToReleaseNotesProperty><![CDATA[
+See full changelog at https://github.com/sillsdev/SIL.NuGetCleaner/blob/master/CHANGELOG.md]]>
+    </AppendToReleaseNotesProperty>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="NuGet.Versioning" Version="5.1.0" />
+  </ItemGroup>
+
+</Project>
