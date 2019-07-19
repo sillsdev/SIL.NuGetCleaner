@@ -87,12 +87,12 @@ namespace SIL.NuGetCleaner.Tests
 		public async Task GetVersions()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle + 
+				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetVersions(), 
+			Assert.That(await sut.GetVersions(),
 				Is.EquivalentTo(new [] {
 					SemanticVersion.Parse("4.0.0"),
 					SemanticVersion.Parse("4.0.1"),
@@ -105,12 +105,12 @@ namespace SIL.NuGetCleaner.Tests
 		public async Task GetPrereleaseVersionsToDelete()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle + 
+				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetPrereleaseVersionsToDelete(), 
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
 				Is.EquivalentTo(new [] { SemanticVersion.Parse("4.0.2-beta0003") }));
 		}
 
@@ -118,7 +118,7 @@ namespace SIL.NuGetCleaner.Tests
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" + 
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
 					""version"": ""4.0.2"",
@@ -133,14 +133,14 @@ namespace SIL.NuGetCleaner.Tests
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty); 
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty);
 		}
 
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_MultiplePrereleaseVersions()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" + 
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
 					""version"": ""4.0.2"",
@@ -160,14 +160,14 @@ namespace SIL.NuGetCleaner.Tests
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty); 
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty);
 		}
 
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_PreviousUnreleased()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" + 
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
 					""version"": ""4.0.2-beta0002"",
@@ -187,15 +187,15 @@ namespace SIL.NuGetCleaner.Tests
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetPrereleaseVersionsToDelete(), 
-				Is.EquivalentTo(new [] { SemanticVersion.Parse("4.0.2-beta0002") })); 
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] { SemanticVersion.Parse("4.0.2-beta0002") }));
 		}
 
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_OnlyUnreleased()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
-				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" + 
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
 					""version"": ""4.0.3-beta0003"",
@@ -205,7 +205,7 @@ namespace SIL.NuGetCleaner.Tests
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp");
-			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty); 
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty);
 		}
 
 		[TestCase(HttpStatusCode.Unauthorized)]
@@ -217,7 +217,7 @@ namespace SIL.NuGetCleaner.Tests
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp", "apikey12345");
-			Assert.That(async () => await sut.DeletePackage(SemanticVersion.Parse("4.0.3-beta0003")), 
+			Assert.That(async () => await sut.DeletePackage(SemanticVersion.Parse("4.0.3-beta0003")),
 				Throws.Exception.TypeOf<UnauthorizedAccessException>());
 		}
 
@@ -246,5 +246,76 @@ namespace SIL.NuGetCleaner.Tests
 				Throws.Nothing);
 		}
 
+		[Test]
+		public async Task CurrentVersion_TipIsReleased()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
+				allVersions + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp");
+			await sut.GetVersions();
+			Assert.That(sut.CurrentVersion, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
+		}
+
+		[Test]
+		public async Task CurrentVersion_TipIsUnreleased()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+				responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp");
+			await sut.GetVersions();
+			Assert.That(sut.CurrentVersion, Is.EqualTo(SemanticVersion.Parse("4.0.3-beta0003")));
+		}
+
+		[Test]
+		public async Task LatestRelease_TipIsReleased()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
+				allVersions + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp");
+			await sut.GetVersions();
+			Assert.That(sut.LatestRelease, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
+		}
+
+		[Test]
+		public async Task LatestRelease_TipIsUnreleased()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+				responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp");
+			await sut.GetVersions();
+			Assert.That(sut.LatestRelease, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
+		}
 	}
 }

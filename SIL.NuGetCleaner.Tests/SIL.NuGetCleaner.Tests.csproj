@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-      <OutputPath>../output/$(Configuration)</OutputPath>
+    <OutputPath>../output/$(Configuration)</OutputPath>
 
     <IsPackable>false</IsPackable>
 

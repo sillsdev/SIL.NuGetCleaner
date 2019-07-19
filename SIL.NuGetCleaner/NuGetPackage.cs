@@ -19,10 +19,10 @@ namespace SIL.NuGetCleaner
 {
 	public class NuGetPackage
 	{
-		private readonly string _packageId;
-		private dynamic _nugetPackageJson;
-		private List<SemanticVersion> _versions;
-		private readonly string _apiKey;
+		private readonly string                _packageId;
+		private          dynamic               _nugetPackageJson;
+		private          List<SemanticVersion> _versions;
+		private readonly string                _apiKey;
 
 		public static HttpClient HttpClient { private get; set; }
 
@@ -38,13 +38,15 @@ namespace SIL.NuGetCleaner
 		{
 			var request = new HttpRequestMessage(HttpMethod.Get,
 				$"https://api-v2v3search-0.nuget.org/query?q=packageid:{_packageId}&prerelease=true");
-			request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+			request.Headers.Accept.Add(
+				new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 			var responseBody = await HttpClient.SendAsync(request);
 			var responseString = await responseBody.Content.ReadAsStringAsync();
 			_nugetPackageJson = JsonConvert.DeserializeObject(responseString);
-			LastVersion = SemanticVersion.Parse(_nugetPackageJson.data[0].version.ToString());
+			CurrentVersion = SemanticVersion.Parse(_nugetPackageJson.data[0].version.ToString());
 			var jsonVersions = _nugetPackageJson.data[0].versions as JArray;
-			_versions = jsonVersions.Select(versionInfo => SemanticVersion.Parse(versionInfo["version"].ToString())).ToList();
+			_versions = jsonVersions.Select(versionInfo =>
+				SemanticVersion.Parse(versionInfo["version"].ToString())).ToList();
 			return _versions;
 		}
 
@@ -57,7 +59,7 @@ namespace SIL.NuGetCleaner
 				if (!semVer.IsPrerelease)
 					continue;
 
-				if (semVer > PreviousRelease)
+				if (semVer > LatestRelease)
 					continue;
 
 				prereleaseVersions.Add(semVer);
@@ -70,6 +72,7 @@ namespace SIL.NuGetCleaner
 		{
 			if (version == null)
 				throw new ArgumentException("Invalid version", nameof(version));
+
 			var request = new HttpRequestMessage(HttpMethod.Delete,
 				$"https://www.nuget.org/api/v2/package/{_packageId}/{version}");
 			request.Headers.Add("X-NuGet-ApiKey", _apiKey);
@@ -86,16 +89,19 @@ namespace SIL.NuGetCleaner
 				case HttpStatusCode.NotFound:
 					throw new VersionNotFoundException(response.ReasonPhrase);
 				default:
-					throw new HttpRequestException($"{response.StatusCode}: {response.ReasonPhrase}");
+					throw new HttpRequestException(
+						$"{response.StatusCode}: {response.ReasonPhrase}");
 			}
 		}
 
-		private SemanticVersion _previousRelease;
-		private SemanticVersion PreviousRelease
+		public SemanticVersion CurrentVersion { get; private set; }
+
+		private SemanticVersion _latestRelease;
+		public SemanticVersion LatestRelease
 		{
 			get
 			{
-				if (_previousRelease == null)
+				if (_latestRelease == null)
 				{
 					for (var i = _versions.Count - 1; i >= 0; i--)
 					{
@@ -103,15 +109,13 @@ namespace SIL.NuGetCleaner
 						if (version.IsPrerelease)
 							continue;
 
-						_previousRelease = version;
+						_latestRelease = version;
 						break;
 					}
 				}
 
-				return _previousRelease;
+				return _latestRelease;
 			}
 		}
-
-		private SemanticVersion LastVersion { get; set; }
 	}
 }
