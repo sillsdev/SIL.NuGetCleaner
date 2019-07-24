@@ -2,7 +2,6 @@
 // This software is licensed under the MIT License (http://opensource.org/licenses/MIT)
 
 using System;
-using System.Data;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -164,6 +163,338 @@ namespace SIL.NuGetCleaner.Tests
 		}
 
 		[Test]
+		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_PrereleaseBeforeLastRelease()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.2-beta0001")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MaxIsInfinite()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+				responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", max: "-1");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.2-beta0001"),
+					SemanticVersion.Parse("4.0.3-beta0002"),
+					SemanticVersion.Parse("4.0.3-beta0003"),
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MaxIsSet()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+					responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", max: "4.0.3-beta0003");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.2-beta0001"),
+					SemanticVersion.Parse("4.0.3-beta0002")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MaxIsLatestRelease()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", max: "4.0.2");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.2-beta0001")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MinIsDefault()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+					responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", min: "");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.2-beta0001")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MinIsLatestRelease_UnreleasedTip()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", min: "4.0.2");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty);
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MinIsLatestRelease()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.4" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				},
+				{
+					""version"": ""4.0.4"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.4.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", min: "4.0.2");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.3-beta0002"),
+					SemanticVersion.Parse("4.0.3-beta0003")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MinIsSet()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.4" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				},
+				{
+					""version"": ""4.0.4"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.4.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", min: "4.0.2-beta0001");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.3-beta0002"),
+					SemanticVersion.Parse("4.0.3-beta0003")
+				}));
+		}
+
+		[Test]
+		public async Task GetPrereleaseVersionsToDelete_MinAndMaxSet()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.4" +
+											responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2-beta0001"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2-beta0001.json""
+				},
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0002"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0002.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				},
+				{
+					""version"": ""4.0.3-beta0004"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0004.json""
+				},
+				{
+					""version"": ""4.0.4"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.4.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", min: "4.0.3-beta0002", max: "4.0.3-beta0004");
+			Assert.That(await sut.GetPrereleaseVersionsToDelete(),
+				Is.EquivalentTo(new [] {
+					SemanticVersion.Parse("4.0.3-beta0003")
+				}));
+		}
+
+		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_PreviousUnreleased()
 		{
 			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
@@ -317,5 +648,51 @@ namespace SIL.NuGetCleaner.Tests
 			await sut.GetVersions();
 			Assert.That(sut.LatestRelease, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
 		}
+
+		[TestCase("", -1, 0, 0, "")]
+		[TestCase("1.2.3", 1, 2, 3, "")]
+		[TestCase("1.2.3-beta4", 1, 2, 3, "beta4")]
+		[TestCase("0.0.3", 0, 0, 3, "")]
+		public void Minimum(string minimum, int major, int minor, int patch, string release)
+		{
+			var sut = new NuGetPackage("L10NSharp", min: minimum);
+			var expectedVersion = major >= 0 ? new SemanticVersion(major, minor, patch, release) : null;
+			Assert.That(sut.Minimum, Is.EqualTo(expectedVersion));
+		}
+
+		[TestCase("-1", int.MaxValue, int.MaxValue, int.MaxValue, "")]
+		[TestCase("1.2.3", 1, 2, 3, "")]
+		[TestCase("1.2.3-beta4", 1, 2, 3, "beta4")]
+		[TestCase("0.0.3", 0, 0, 3, "")]
+		public void Maximum(string maximum, int major, int minor, int patch, string release)
+		{
+			var sut = new NuGetPackage("L10NSharp", max: maximum);
+			var expectedVersion = new SemanticVersion(major, minor, patch, release);
+			Assert.That(sut.Maximum, Is.EqualTo(expectedVersion));
+		}
+
+		[Test]
+		public async Task Maximum_Default_IsLatestRelease()
+		{
+			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
+					responseJsonMiddle + @"
+				{
+					""version"": ""4.0.2"",
+					""downloads"": 28,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.2.json""
+				},
+				{
+					""version"": ""4.0.3-beta0003"",
+					""downloads"": 0,
+					""@id"": ""https://api.nuget.org/v3/registration3/l10nsharp/4.0.3-beta0003.json""
+				}" + responseJsonEnd);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", max: "");
+			await sut.GetVersions();
+			Assert.That(sut.Maximum, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
+		}
+
 	}
 }

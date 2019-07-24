@@ -19,7 +19,8 @@ namespace SIL.NuGetCleaner
 		private static async Task Execute(Options options)
 		{
 			Console.WriteLine($"Checking {options.PackageId} for pre-release versions:");
-			var nugetPackage = new NuGetPackage(options.PackageId, options.ApiKey);
+			var nugetPackage = new NuGetPackage(options.PackageId, options.ApiKey,
+				options.Minimum, options.Maximum);
 			var versionsToDelete = await nugetPackage.GetPrereleaseVersionsToDelete();
 			if (versionsToDelete.Count == 0)
 			{

@@ -23,15 +23,23 @@ namespace SIL.NuGetCleaner
 		private          dynamic               _nugetPackageJson;
 		private          List<SemanticVersion> _versions;
 		private readonly string                _apiKey;
+		private readonly string                _maxVersionString;
 
 		public static HttpClient HttpClient { private get; set; }
 
-		public NuGetPackage(string packageId, string apiKey = null)
+		public NuGetPackage(string packageId, string apiKey = null, string min = "", string max = "")
 		{
 			_packageId = packageId;
 			_apiKey = apiKey;
 			if (HttpClient == null)
 				HttpClient = new HttpClient();
+
+			if (!string.IsNullOrEmpty(min))
+			{
+				Minimum = SemanticVersion.Parse(min);
+			}
+
+			_maxVersionString = max;
 		}
 
 		public async Task<List<SemanticVersion>> GetVersions()
@@ -59,7 +67,7 @@ namespace SIL.NuGetCleaner
 				if (!semVer.IsPrerelease)
 					continue;
 
-				if (semVer > LatestRelease)
+				if (semVer <= Minimum || semVer >= Maximum)
 					continue;
 
 				prereleaseVersions.Add(semVer);
@@ -115,6 +123,29 @@ namespace SIL.NuGetCleaner
 				}
 
 				return _latestRelease;
+			}
+		}
+
+		public SemanticVersion Minimum { get; }
+
+		private SemanticVersion _maximum;
+		public SemanticVersion Maximum
+		{
+			get
+			{
+				if (_maximum != null)
+					return _maximum;
+
+				if (_maxVersionString == "-1")
+					_maximum = new SemanticVersion(int.MaxValue, int.MaxValue, int.MaxValue);
+				else
+				{
+					_maximum = string.IsNullOrEmpty(_maxVersionString)
+						? LatestRelease
+						: SemanticVersion.Parse(_maxVersionString);
+				}
+
+				return _maximum;
 			}
 		}
 	}
