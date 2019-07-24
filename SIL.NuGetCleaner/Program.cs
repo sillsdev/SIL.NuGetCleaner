@@ -22,6 +22,11 @@ namespace SIL.NuGetCleaner
 			var nugetPackage = new NuGetPackage(options.PackageId, options.ApiKey,
 				options.Minimum, options.Maximum);
 			var versionsToDelete = await nugetPackage.GetPrereleaseVersionsToDelete();
+			if (versionsToDelete == null)
+			{
+				Console.WriteLine($"ERROR: Can't find any versions for {options.PackageId}");
+				return;
+			}
 			if (versionsToDelete.Count == 0)
 			{
 				Console.WriteLine("No obsolete pre-release versions found.");

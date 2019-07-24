@@ -51,16 +51,24 @@ namespace SIL.NuGetCleaner
 			var responseBody = await HttpClient.SendAsync(request);
 			var responseString = await responseBody.Content.ReadAsStringAsync();
 			_nugetPackageJson = JsonConvert.DeserializeObject(responseString);
-			CurrentVersion = SemanticVersion.Parse(_nugetPackageJson.data[0].version.ToString());
+			if (_nugetPackageJson.data.Count <= 0)
+				return null;
+
+			var versionString = _nugetPackageJson.data[0].version.ToString();
+			CurrentVersion = SemanticVersion.Parse(versionString);
 			var jsonVersions = _nugetPackageJson.data[0].versions as JArray;
 			_versions = jsonVersions.Select(versionInfo =>
 				SemanticVersion.Parse(versionInfo["version"].ToString())).ToList();
 			return _versions;
+
 		}
 
 		public async Task<List<SemanticVersion>> GetPrereleaseVersionsToDelete()
 		{
 			var versions = await GetVersions();
+			if (versions == null)
+				return null;
+
 			var prereleaseVersions = new List<SemanticVersion>();
 			foreach (var semVer in versions)
 			{
