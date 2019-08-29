@@ -7,6 +7,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{465F739F-BE7A-4C10-9A1A-F60FECD123C0}"
 ProjectSection(SolutionItems) = preProject
 	CHANGELOG.md = CHANGELOG.md
+	.editorconfig = .editorconfig
+	.gitignore = .gitignore
+	GitVersion.yml = GitVersion.yml
+	README.md = README.md
+	renovate.json = renovate.json
 EndProjectSection
 EndProject
 Global

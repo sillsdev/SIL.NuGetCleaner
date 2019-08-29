@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- internal housekeeping
+
 ## [1.1.1] - 2019-07-24
 
 ### Fixed
