@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - internal housekeeping
 
+### Fixed
+
+- find all packages, also ones that use SemVer v2.0.0
+
 ## [1.1.1] - 2019-07-24
 
 ### Fixed
