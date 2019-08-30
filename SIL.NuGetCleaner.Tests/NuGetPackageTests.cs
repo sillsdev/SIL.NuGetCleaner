@@ -85,7 +85,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetVersions()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
@@ -103,7 +103,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
@@ -116,7 +116,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -138,7 +138,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_MultiplePrereleaseVersions()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -165,7 +165,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_PrereleaseBeforeLastRelease()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 											responseJsonMiddle + @"
 				{
@@ -195,7 +195,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MaxIsInfinite()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -232,7 +232,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MaxIsSet()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 					responseJsonMiddle + @"
 				{
@@ -268,7 +268,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MaxIsLatestRelease()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 											responseJsonMiddle + @"
 				{
@@ -303,7 +303,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MinIsDefault()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 					responseJsonMiddle + @"
 				{
@@ -338,7 +338,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MinIsLatestRelease_UnreleasedTip()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 											responseJsonMiddle + @"
 				{
@@ -370,7 +370,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MinIsLatestRelease()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.4" +
 											responseJsonMiddle + @"
 				{
@@ -411,7 +411,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MinIsSet()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.4" +
 											responseJsonMiddle + @"
 				{
@@ -452,7 +452,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_MinAndMaxSet()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.4" +
 											responseJsonMiddle + @"
 				{
@@ -497,7 +497,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_PreviousUnreleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -525,7 +525,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task GetPrereleaseVersionsToDelete_TipIsUnreleased_OnlyUnreleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -580,7 +580,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task CurrentVersion_TipIsReleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
@@ -593,7 +593,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task CurrentVersion_TipIsUnreleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -616,7 +616,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task LatestRelease_TipIsReleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.2" + responseJsonMiddle +
 				allVersions + responseJsonEnd);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
@@ -629,7 +629,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task LatestRelease_TipIsUnreleased()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 				responseJsonMiddle + @"
 				{
@@ -674,7 +674,7 @@ namespace SIL.NuGetCleaner.Tests
 		[Test]
 		public async Task Maximum_Default_IsLatestRelease()
 		{
-			_mockHttp.When("https://api-v2v3search-0.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
+			_mockHttp.When("https://azuresearch-usnc.nuget.org/query?q=packageid:L10NSharp&prerelease=true")
 				.Respond("application/json", responseJsonBegin + "4.0.3-beta0003" +
 					responseJsonMiddle + @"
 				{
