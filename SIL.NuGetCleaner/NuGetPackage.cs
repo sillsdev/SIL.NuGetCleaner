@@ -45,7 +45,7 @@ namespace SIL.NuGetCleaner
 		public async Task<List<SemanticVersion>> GetVersions()
 		{
 			var request = new HttpRequestMessage(HttpMethod.Get,
-				$"https://api-v2v3search-0.nuget.org/query?q=packageid:{_packageId}&prerelease=true");
+				$"https://azuresearch-usnc.nuget.org/query?q=packageid:{_packageId}&prerelease=true&semVerLevel=2.0.0");
 			request.Headers.Accept.Add(
 				new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
 			var responseBody = await HttpClient.SendAsync(request);
