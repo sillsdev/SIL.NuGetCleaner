@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - internal housekeeping
+- use netcore 3.1
 
 ### Fixed
 
