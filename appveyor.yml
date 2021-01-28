@@ -10,6 +10,8 @@ init:
 nuget:
   disable_publish_on_pr: true
   disable_publish_octopus: true
+before_build:
+- cmd: dotnet restore
 build:
   publish_nuget: true
   publish_nuget_symbols: true
