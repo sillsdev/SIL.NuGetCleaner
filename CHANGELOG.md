@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- use .NET 5.0
+
+### Fixed
+
+- allow to run on Linux (again)
+
 ## [1.2.1] - 2021-03-04
 
 ### Fixed
