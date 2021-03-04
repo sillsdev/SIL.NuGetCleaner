@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.2] - 2021-03-04
+
 ### Changed
 
 - use .NET 5.0
