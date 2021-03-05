@@ -12,6 +12,7 @@ ProjectSection(SolutionItems) = preProject
 	GitVersion.yml = GitVersion.yml
 	README.md = README.md
 	renovate.json = renovate.json
+	appveyor.yml = appveyor.yml
 EndProjectSection
 EndProject
 Global
