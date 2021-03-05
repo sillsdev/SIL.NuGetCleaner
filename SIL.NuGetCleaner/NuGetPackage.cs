@@ -100,8 +100,10 @@ namespace SIL.NuGetCleaner
 				case HttpStatusCode.Accepted:
 					return response.ReasonPhrase;
 				case HttpStatusCode.Unauthorized:
-				case HttpStatusCode.Forbidden:
 					throw new UnauthorizedAccessException(response.ReasonPhrase);
+				case HttpStatusCode.Forbidden:
+					// https://docs.microsoft.com/en-us/nuget/api/rate-limits
+					throw new QuotaExceededException(response.ReasonPhrase);
 				case HttpStatusCode.NotFound:
 					throw new VersionNotFoundException(response.ReasonPhrase);
 				default:

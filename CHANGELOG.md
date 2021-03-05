@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- in case we exceed the quota on nuget.org we wait 60 minutes and try again.
+
 ## [1.2.2] - 2021-03-04
 
 ### Changed

@@ -3,6 +3,7 @@
 
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 
@@ -42,16 +43,28 @@ namespace SIL.NuGetCleaner
 						Console.WriteLine(version);
 					else
 					{
-						Console.WriteLine($"Unlisting {version}");
-						var msg = await nugetPackage.DeletePackage(version);
-						Console.WriteLine(msg);
+						while (true)
+						{
+							try
+							{
+								Console.WriteLine($"Unlisting {version}");
+								var msg = await nugetPackage.DeletePackage(version);
+								Console.WriteLine(msg);
+								break;
+							}
+							catch (QuotaExceededException e)
+							{
+								Console.WriteLine($"WARNING: hit rate limit: {e.Message}. Waiting 60 minutes...");
+								Thread.Sleep(new TimeSpan(0, 0, 60, 0));
+							}
+						}
 					}
 				}
 			}
-			catch (UnauthorizedAccessException)
+			catch (UnauthorizedAccessException eu)
 			{
 				Console.WriteLine(
-					$"ERROR: Not authorized to unlist {options.PackageId}. Check your NuGet API key.");
+					$"ERROR: Not authorized to unlist {options.PackageId}. Check your NuGet API key. ({eu.Message})");
 			}
 			catch (AggregateException e)
 			{

@@ -28,7 +28,7 @@ namespace SIL.NuGetCleaner.Tests
 					""registration"": ""https://api.nuget.org/v3/registration3/l10nsharp/index.json"",
 					""id"": ""L10NSharp"",
 					""version"": """;
-			private const string responseJsonMiddle = @""",
+		private const string responseJsonMiddle = @""",
 					""description"": ""L10NSharp is a .NET localization library"",
 					""summary"": """",
 					""title"": ""L10NSharp"",
@@ -539,17 +539,28 @@ namespace SIL.NuGetCleaner.Tests
 			Assert.That(await sut.GetPrereleaseVersionsToDelete(), Is.Empty);
 		}
 
-		[TestCase(HttpStatusCode.Unauthorized)]
-		[TestCase(HttpStatusCode.Forbidden)]
-		public void DeletePackage_Unauthorized(HttpStatusCode statusCode)
+		[Test]
+		public void DeletePackage_Unauthorized()
 		{
 			_mockHttp.Expect(HttpMethod.Delete, "https://www.nuget.org/api/v2/package/L10NSharp/4.0.3-beta0003")
-				.WithHeaders("X-NuGet-ApiKey", "apikey12345").Respond(statusCode);
+				.WithHeaders("X-NuGet-ApiKey", "apikey12345").Respond(HttpStatusCode.Unauthorized);
 			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
 
 			var sut = new NuGetPackage("L10NSharp", "apikey12345");
 			Assert.That(async () => await sut.DeletePackage(SemanticVersion.Parse("4.0.3-beta0003")),
 				Throws.Exception.TypeOf<UnauthorizedAccessException>());
+		}
+
+		[Test]
+		public void DeletePackage_QuotaExceeded()
+		{
+			_mockHttp.Expect(HttpMethod.Delete, "https://www.nuget.org/api/v2/package/L10NSharp/4.0.3-beta0003")
+				.WithHeaders("X-NuGet-ApiKey", "apikey12345").Respond(HttpStatusCode.Forbidden);
+			NuGetPackage.HttpClient = _mockHttp.ToHttpClient();
+
+			var sut = new NuGetPackage("L10NSharp", "apikey12345");
+			Assert.That(async () => await sut.DeletePackage(SemanticVersion.Parse("4.0.3-beta0003")),
+				Throws.Exception.TypeOf<QuotaExceededException>());
 		}
 
 		[Test]
