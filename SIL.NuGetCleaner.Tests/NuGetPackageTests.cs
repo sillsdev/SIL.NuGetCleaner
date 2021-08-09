@@ -704,6 +704,5 @@ namespace SIL.NuGetCleaner.Tests
 			await sut.GetVersions();
 			Assert.That(sut.Maximum, Is.EqualTo(SemanticVersion.Parse("4.0.2")));
 		}
-
 	}
 }

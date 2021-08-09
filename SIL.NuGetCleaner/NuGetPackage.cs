@@ -21,7 +21,7 @@ namespace SIL.NuGetCleaner
 	{
 		private readonly string                _packageId;
 		private          dynamic               _nugetPackageJson;
-		private          List<SemanticVersion> _versions;
+		private          List<TolerantSemanticVersion> _versions;
 		private readonly string                _apiKey;
 		private readonly string                _maxVersionString;
 
@@ -31,8 +31,7 @@ namespace SIL.NuGetCleaner
 		{
 			_packageId = packageId;
 			_apiKey = apiKey;
-			if (HttpClient == null)
-				HttpClient = new HttpClient();
+			HttpClient ??= new HttpClient();
 
 			if (!string.IsNullOrEmpty(min))
 			{
@@ -42,7 +41,7 @@ namespace SIL.NuGetCleaner
 			_maxVersionString = max;
 		}
 
-		public async Task<List<SemanticVersion>> GetVersions()
+		public async Task<List<TolerantSemanticVersion>> GetVersions()
 		{
 			var request = new HttpRequestMessage(HttpMethod.Get,
 				$"https://azuresearch-usnc.nuget.org/query?q=packageid:{_packageId}&prerelease=true&semVerLevel=2.0.0");
@@ -55,21 +54,20 @@ namespace SIL.NuGetCleaner
 				return null;
 
 			var versionString = _nugetPackageJson.data[0].version.ToString();
-			CurrentVersion = SemanticVersion.Parse(versionString);
+			CurrentVersion = TolerantSemanticVersion.ParseVersion(versionString);
 			var jsonVersions = _nugetPackageJson.data[0].versions as JArray;
 			_versions = jsonVersions.Select(versionInfo =>
-				SemanticVersion.Parse(versionInfo["version"].ToString())).ToList();
+				TolerantSemanticVersion.ParseVersion(versionInfo["version"].ToString())).ToList();
 			return _versions;
-
 		}
 
-		public async Task<List<SemanticVersion>> GetPrereleaseVersionsToDelete()
+		public async Task<List<TolerantSemanticVersion>> GetPrereleaseVersionsToDelete()
 		{
 			var versions = await GetVersions();
 			if (versions == null)
 				return null;
 
-			var prereleaseVersions = new List<SemanticVersion>();
+			var prereleaseVersions = new List<TolerantSemanticVersion>();
 			foreach (var semVer in versions)
 			{
 				if (!semVer.IsPrerelease)
@@ -119,17 +117,17 @@ namespace SIL.NuGetCleaner
 		{
 			get
 			{
-				if (_latestRelease == null)
-				{
-					for (var i = _versions.Count - 1; i >= 0; i--)
-					{
-						var version = _versions[i];
-						if (version.IsPrerelease)
-							continue;
+				if (_latestRelease != null)
+					return _latestRelease;
 
-						_latestRelease = version;
-						break;
-					}
+				for (var i = _versions.Count - 1; i >= 0; i--)
+				{
+					var version = _versions[i];
+					if (version.IsPrerelease)
+						continue;
+
+					_latestRelease = version;
+					break;
 				}
 
 				return _latestRelease;

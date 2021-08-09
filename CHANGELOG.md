@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.1] - 2021-08-09
+
+### Fixed
+
+- updated dependencies to fix a crash on Windows (#46)
+- made parsing of version numbers more tolerant
+
 ## [1.3.0] - 2021-03-05
 
 ### Changed
@@ -72,3 +79,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Initial release
+
+[Unreleased]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.3.1...master
+[1.3.1]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.2.2...v1.3.0
+[1.2.2]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/sillsdev/SIL.NuGetCleaner/compare/c897e3e...v1.0.1
