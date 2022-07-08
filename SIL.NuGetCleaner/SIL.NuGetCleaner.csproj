@@ -2,14 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SIL.NuGetCleaner</RootNamespace>
     <Description>NuGetCleaner allows to unlist pre-release packages after the release of a new version.</Description>
     <AssemblyTitle>NuGetCleaner</AssemblyTitle>
-    <Company>SIL</Company>
-    <Product>Palaso Library</Product>
-    <Copyright>Copyright © 2019-2021 SIL International</Copyright>
-    <Authors>SIL International</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/sillsdev/SIL.NuGetCleaner</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

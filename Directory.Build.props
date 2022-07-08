@@ -1,0 +1,9 @@
+<Project>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Company>SIL</Company>
+		<Product>Palaso Library</Product>
+		<Copyright>Copyright © 2019-2022 SIL International</Copyright>
+		<Authors>SIL International</Authors>
+	</PropertyGroup>
+</Project>
