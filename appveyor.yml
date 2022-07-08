@@ -3,20 +3,23 @@ branches:
   only:
   - master
 image: Visual Studio 2022
+configuration: Release
 init:
-  - cmd: >-
+  - cmd: |
       set GITVERSION_BUILD_NUMBER=%APPVEYOR_BUILD_NUMBER%
-
       if defined APPVEYOR_PULL_REQUEST_NUMBER set GitVersion_NoNormalizeEnabled=true
 environment:
   IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
+install:
+  - choco install gitversion.portable -pre -y
 nuget:
   disable_publish_on_pr: true
   disable_publish_octopus: true
 before_build:
-  - cmd: >-
-      if defined APPVEYOR_PULL_REQUEST_NUMBER git checkout -b PR-%APPVEYOR_PULL_REQUEST_NUMBER%
-
+  - cmd: |
+      set GitVersion_NoNormalizeEnabled=true
+      if defined APPVEYOR_PULL_REQUEST_NUMBER (git checkout -B PR-%APPVEYOR_PULL_REQUEST_NUMBER%) else (git checkout -B %APPVEYOR_REPO_BRANCH%)
+      gitversion /l console /output buildserver /nonormalize
       dotnet restore
 build:
   publish_nuget: true
@@ -24,7 +27,7 @@ build:
   use_snupkg_format: true
   verbosity: normal
 artifacts:
-- path: '**/*nupkg'
+- path: 'output/Release/*nupkg'
   name: nuget
 deploy:
 - provider: Environment
