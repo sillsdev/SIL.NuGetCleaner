@@ -1,5 +1,8 @@
 # SIL.NuGetCleaner
 
+[![NuGet version (SIL.NuGetCleaner)](https://img.shields.io/nuget/v/sil.nugetcleaner.svg?style=flat-square)](https://www.nuget.org/packages/SIL.NuGetCleaner)
+[![Build, Test and Pack](https://github.com/sillsdev/SIL.NuGetCleaner/actions/workflows/CI-CD.yml/badge.svg)](https://github.com/sillsdev/SIL.NuGetCleaner/actions/workflows/CI-CD.yml)
+
 ## Description
 
 `nugetclean` allows to unlist pre-release versions of a nuget package once a new
