@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- Target .NET 10.0
 - Added GitHub Action builds
 - Update dependencies
 
