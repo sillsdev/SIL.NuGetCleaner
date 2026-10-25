@@ -29,7 +29,7 @@ See full changelog at https://github.com/sillsdev/SIL.NuGetCleaner/blob/master/C
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NuGet.Versioning" Version="7.9.0" />
     <PackageReference Include="SIL.ReleaseTasks" Version="4.0.0" PrivateAssets="all" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.13" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.14" />
   </ItemGroup>
 
 </Project>
